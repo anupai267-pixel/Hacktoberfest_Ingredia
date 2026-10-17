@@ -5,13 +5,8 @@ import { supabase, isSupabaseConfigured } from './supabaseClient';
 export interface AIExplanationResult {
   text: string;
   source: 'groq' | 'gemini' | 'template';
-  modelUsed?: string;
-}
-
-export interface AIExplanationResult {
-  text: string;
-  source: 'groq' | 'template';
   model?: string;
+  modelUsed?: string;
 }
 
 /**
@@ -19,9 +14,8 @@ export interface AIExplanationResult {
  * without needing an external API key.
  *
  * This function acts as the deterministic fallback whenever:
- * 1. Supabase is not configured (e.g. offline or local demo mode)
- * 2. The Groq API key is not configured on the Supabase Edge Function
- * 3. Network or rate limit errors occur
+ * 1. Backend server or Groq is not configured or offline
+ * 2. Network, timeout, or rate limit errors occur
  */
 export function generateTemplateExplanation(
   analysis: AnalysisResult,
@@ -93,37 +87,26 @@ export function generateTemplateExplanation(
 }
 
 /**
-<<<<<<< HEAD
- * Requests an AI explanation from the secure backend Groq service.
- * 
- * Safety & Security Guarantees:
- * - Groq API key is strictly maintained on the server and never sent to the browser.
- * - The deterministic rules engine verdict is never overridden.
- * - If the backend server is offline or Groq is unconfigured/rate-limited,
- *   the system automatically falls back to the deterministic template explanation.
-=======
- * Requests an AI explanation from the secure Supabase Edge Function (`ingredia-ai`),
- * powered by Groq and open-weight models (default: openai/gpt-oss-20b).
+ * Requests an AI explanation from the secure backend Groq service or Supabase Edge Function.
  *
  * Strict safety principle:
  * The rules engine ALREADY computed the verdict. The AI only articulates the findings
  * without overriding verdicts, hallucinating ingredients, or making clinical claims.
  *
- * Falls back gracefully to `generateTemplateExplanation()` if Supabase is unconfigured,
- * or if the Edge Function encounters any error.
->>>>>>> f5d1b0e8c9bf2012e5776ae924b0aa7d3461bdb6
+ * Falls back gracefully to `generateTemplateExplanation()` if Groq/backend is unconfigured,
+ * or if any error occurs.
  */
 export async function requestAIExplanation(
   analysis: AnalysisResult,
   product: NormalizedProduct
 ): Promise<AIExplanationResult> {
-<<<<<<< HEAD
+  // 1. Try Express backend endpoint (POST /api/ai/explain)
   const apiBase = import.meta.env.VITE_API_URL || '';
   const endpoint = `${apiBase}/api/ai/explain`;
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -162,63 +145,51 @@ export async function requestAIExplanation(
           text: data.text,
           source: 'groq',
           model: data.model,
+          modelUsed: data.model,
         };
       }
     }
-  } catch (error) {
-    // Expected when backend server is not running or timeout occurs: silent fallback
-    console.info('Backend Groq explanation unavailable, using deterministic rules synthesis.');
-=======
-  // If Supabase is not configured (e.g. running in local demo mode), fallback immediately
-  if (!isSupabaseConfigured || !supabase) {
-    return {
-      text: generateTemplateExplanation(analysis, product),
-      source: 'template',
-    };
+  } catch (_e) {
+    // Backend server offline or timeout
   }
 
-  try {
-    const { data, error } = await supabase.functions.invoke('ingredia-ai', {
-      body: {
-        product: {
-          name: product.name,
-          brand: product.brand,
+  // 2. Secondary fallback: Try Supabase Edge Function if configured
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase.functions.invoke('ingredia-ai', {
+        body: {
+          product: {
+            name: product.name,
+            brand: product.brand,
+          },
+          analysis: {
+            verdict: analysis.verdict,
+            matchedAllergens: analysis.matchedAllergens,
+            matchedTraces: analysis.matchedTraces,
+            ingredientsOfConcern: analysis.ingredientsOfConcern,
+            triggeredRules: analysis.triggeredRules,
+            missingDataNotes: analysis.missingDataNotes,
+            nutritionalObservations: (analysis.nutritionalObservations || [])
+              .filter(n => n.status === 'high' || n.status === 'moderate')
+              .map(n => `${n.metric}: ${n.value ?? ''}${n.unit} (${n.status})`),
+          },
         },
-        analysis: {
-          verdict: analysis.verdict,
-          matchedAllergens: analysis.matchedAllergens,
-          matchedTraces: analysis.matchedTraces,
-          ingredientsOfConcern: analysis.ingredientsOfConcern,
-          triggeredRules: analysis.triggeredRules,
-          missingDataNotes: analysis.missingDataNotes,
-          nutritionalObservations: analysis.nutritionalObservations
-            .filter(n => n.status === 'high' || n.status === 'moderate')
-            .map(n => `${n.metric}: ${n.value ?? ''}${n.unit} (${n.status})`),
-        },
-      },
-    });
+      });
 
-    if (error) {
-      console.warn('Supabase Edge Function returned an error, falling back to template explanation:', error.message || error);
-      return {
-        text: generateTemplateExplanation(analysis, product),
-        source: 'template',
-      };
+      if (!error && data?.explanation && typeof data.explanation === 'string' && data.explanation.trim()) {
+        return {
+          text: data.explanation.trim(),
+          source: 'groq',
+          model: data.model,
+          modelUsed: data.model,
+        };
+      }
+    } catch (_err) {
+      // Supabase Edge Function call failed
     }
-
-    if (data?.explanation && typeof data.explanation === 'string' && data.explanation.trim()) {
-      return {
-        text: data.explanation.trim(),
-        source: 'groq',
-        modelUsed: data.model,
-      };
-    }
-  } catch (err) {
-    console.warn('AI explanation request failed, using template explanation:', err);
->>>>>>> f5d1b0e8c9bf2012e5776ae924b0aa7d3461bdb6
   }
 
-  // Resilient deterministic fallback
+  // 3. Reliable deterministic rules engine template fallback
   return {
     text: generateTemplateExplanation(analysis, product),
     source: 'template',

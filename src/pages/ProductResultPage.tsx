@@ -38,11 +38,7 @@ export const ProductResultPage: React.FC = () => {
 
   // AI explanation state
   const [aiText, setAiText] = useState<string | null>(null);
-<<<<<<< HEAD
-  const [aiSource, setAiSource] = useState<'groq' | 'template'>('template');
-=======
   const [aiSource, setAiSource] = useState<'groq' | 'gemini' | 'template'>('template');
->>>>>>> f5d1b0e8c9bf2012e5776ae924b0aa7d3461bdb6
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showRuleTriggers, setShowRuleTriggers] = useState(false);
 
@@ -345,15 +341,11 @@ export const ProductResultPage: React.FC = () => {
               fontWeight: 600,
             }}
           >
-<<<<<<< HEAD
-            {aiSource === 'groq' ? 'AI Explanation (Groq)' : 'Transparent Rule Synthesis'}
-=======
             {aiSource === 'groq'
-              ? 'Groq Open-Weight AI'
+              ? 'Groq AI Explanation'
               : aiSource === 'gemini'
-              ? 'Gemini AI Explanation'
+              ? 'AI Explanation'
               : 'Transparent Rule Synthesis'}
->>>>>>> f5d1b0e8c9bf2012e5776ae924b0aa7d3461bdb6
           </span>
         </div>
 
