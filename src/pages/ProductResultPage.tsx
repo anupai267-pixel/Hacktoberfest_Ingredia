@@ -37,7 +37,7 @@ export const ProductResultPage: React.FC = () => {
 
   // AI explanation state
   const [aiText, setAiText] = useState<string | null>(null);
-  const [aiSource, setAiSource] = useState<'gemini' | 'template'>('template');
+  const [aiSource, setAiSource] = useState<'groq' | 'gemini' | 'template'>('template');
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showRuleTriggers, setShowRuleTriggers] = useState(false);
 
@@ -332,7 +332,11 @@ export const ProductResultPage: React.FC = () => {
               fontWeight: 600,
             }}
           >
-            {aiSource === 'gemini' ? 'Gemini AI Explanation' : 'Transparent Rule Synthesis'}
+            {aiSource === 'groq'
+              ? 'Groq Open-Weight AI'
+              : aiSource === 'gemini'
+              ? 'Gemini AI Explanation'
+              : 'Transparent Rule Synthesis'}
           </span>
         </div>
 
