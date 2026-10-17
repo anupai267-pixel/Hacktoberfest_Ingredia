@@ -33,7 +33,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
           </h2>
 
           <p className="notice-bold">
-            SHE Scan provides general nutritional guidance,
+            Ingredia provides general nutritional guidance,
             not medical advice.
           </p>
 
