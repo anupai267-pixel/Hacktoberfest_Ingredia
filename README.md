@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Ingredia — Know What’s in Your Food
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
@@ -248,3 +249,6 @@ The nutrition engine evaluates packaged foods against the following illustrative
 - **Icons**: [Lucide React](https://lucide.dev/) (ISC License).
 - **OCR Engine**: [Tesseract.js](https://tesseract.projectnaptha.com/) (Apache-2.0 License).
 - **Barcode Decoding**: [@zxing/browser](https://github.com/zxing-js/browser) (MIT License).
+=======
+# Hacktoberfest_Ingredia
+>>>>>>> 09078a9740572f1b274297ff45cd9e171496e572
