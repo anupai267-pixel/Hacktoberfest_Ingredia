@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 90" width="380" height="90" fill="none" role="img" aria-label="Ingredia - Know What's in Your Food">
+  <g transform="translate(4, 0) scale(0.75)">
+    <!-- Scanning brackets -->
+    <path d="M 22 36 L 22 24 C 22 20 25 17 29 17 L 41 17" stroke="#B03A67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+    <path d="M 98 36 L 98 24 C 98 20 95 17 91 17 L 79 17" stroke="#B03A67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+    <path d="M 22 84 L 22 96 C 22 100 25 103 29 103 L 41 103" stroke="#B03A67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+    <path d="M 98 84 L 98 96 C 98 100 95 103 91 103 L 79 103" stroke="#B03A67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+
+    <!-- Small green leaf at top -->
+    <path d="M 60 27 C 62 18 73 17 76 19 C 76 27 68 31 60 27 Z" fill="#477A5B"/>
+    <path d="M 60 27 C 59 31 58 35 59 38" stroke="#6E5F6B" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Fruit / Apple body -->
+    <path d="M 60 41 C 51 36 32 38 32 58 C 32 79 46 95 60 95 C 74 95 88 79 88 58 C 88 38 69 36 60 41 Z" fill="#FCEFF2" stroke="#B03A67" stroke-width="3" stroke-linejoin="round"/>
+
+    <!-- Barcode lines inside fruit -->
+    <g stroke="#B03A67" stroke-linecap="round">
+      <line x1="45" y1="53" x2="45" y2="79" stroke-width="3"/>
+      <line x1="51" y1="53" x2="51" y2="79" stroke-width="1.8"/>
+      <line x1="56" y1="53" x2="56" y2="79" stroke-width="2.8"/>
+      <line x1="61" y1="53" x2="61" y2="79" stroke-width="1.8"/>
+      <line x1="66" y1="53" x2="66" y2="79" stroke-width="3.2"/>
+      <line x1="71" y1="53" x2="71" y2="79" stroke-width="1.8"/>
+      <line x1="75" y1="53" x2="75" y2="79" stroke-width="2.6"/>
+    </g>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="100" y="52" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif" font-size="36" font-weight="700" letter-spacing="-0.5" fill="#2E2430">
+    Ingred<tspan fill="#B03A67">ia</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="101" y="73" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif" font-size="12.5" font-weight="500" letter-spacing="0.2" fill="#6E5F6B">
+    Know What’s in Your Food
+  </text>
+</svg>

@@ -1,0 +1,359 @@
+/* ==========================================================================
+   INGREDIA DESIGN SYSTEM — MINIMAL AND PREMIUM
+   ========================================================================== */
+
+:root {
+  /* Brand Palette */
+  --bg-main: #FFF8F7;
+  --bg-card: #FFFFFF;
+  --bg-blush: #FCEFF2;
+  --bg-blush-subtle: #FFF3F5;
+  --primary-berry: #B03A67;
+  --primary-berry-hover: #962E55;
+  --primary-berry-active: #7E2345;
+  --primary-berry-light: #FBF0F4;
+  
+  /* Neutral Typography & Borders */
+  --text-main: #2E2430;
+  --text-secondary: #6E5F6B;
+  --text-muted: #958592;
+  --border-color: #F0DDE2;
+  --border-light: #F7EDF0;
+  --border-focus: #B03A67;
+
+  /* Semantic Verdict & State Colors */
+  --status-suitable: #477A5B;
+  --status-suitable-bg: #EEF6F1;
+  --status-suitable-border: #D1E5D9;
+
+  --status-caution: #A66A16;
+  --status-caution-bg: #FCF6EC;
+  --status-caution-border: #F3E0C4;
+
+  --status-avoid: #B63B48;
+  --status-avoid-bg: #FDF1F2;
+  --status-avoid-border: #F7D0D4;
+
+  --status-insufficient: #5B6777;
+  --status-insufficient-bg: #F1F4F8;
+  --status-insufficient-border: #D7DEE7;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Radius & Shadows - Subtle & Restrained */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(46, 36, 48, 0.04), 0 1px 2px rgba(46, 36, 48, 0.03);
+  --shadow-md: 0 4px 12px rgba(46, 36, 48, 0.05), 0 2px 4px rgba(46, 36, 48, 0.02);
+  --shadow-lg: 0 10px 24px rgba(46, 36, 48, 0.07), 0 4px 8px rgba(46, 36, 48, 0.03);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base Reset & Typography */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+a {
+  color: var(--primary-berry);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-berry-hover);
+}
+
+/* Accessibility Focus States */
+:focus-visible {
+  outline: 2px solid var(--primary-berry);
+  outline-offset: 2px;
+}
+
+/* Layout Utilities */
+.app-container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.app-container-narrow {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Shared UI Components */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card:hover {
+  border-color: #E6CED6;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--primary-berry);
+  color: #FFFFFF;
+  border-color: var(--primary-berry);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-berry-hover);
+  border-color: var(--primary-berry-hover);
+  color: #FFFFFF;
+}
+
+.btn-primary:active:not(:disabled) {
+  background-color: var(--primary-berry-active);
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-blush);
+  border-color: #E2CAD1;
+  color: var(--primary-berry);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--bg-blush);
+  color: var(--primary-berry);
+}
+
+.btn-danger {
+  background-color: #FFFFFF;
+  color: var(--status-avoid);
+  border-color: var(--status-avoid-border);
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--status-avoid-bg);
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Form Controls */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.form-helper {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  color: var(--text-main);
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(176, 58, 103, 0.12);
+}
+
+.form-input::placeholder, .form-textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* Badges & Tags */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.badge-suitable {
+  background-color: var(--status-suitable-bg);
+  color: var(--status-suitable);
+  border: 1px solid var(--status-suitable-border);
+}
+
+.badge-caution {
+  background-color: var(--status-caution-bg);
+  color: var(--status-caution);
+  border: 1px solid var(--status-caution-border);
+}
+
+.badge-avoid {
+  background-color: var(--status-avoid-bg);
+  color: var(--status-avoid);
+  border: 1px solid var(--status-avoid-border);
+}
+
+.badge-insufficient {
+  background-color: var(--status-insufficient-bg);
+  color: var(--status-insufficient);
+  border: 1px solid var(--status-insufficient-border);
+}
+
+.badge-neutral {
+  background-color: var(--bg-blush);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+/* Notification & Alert banners */
+.alert-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.alert-banner-info {
+  background-color: var(--bg-blush);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.alert-banner-warning {
+  background-color: var(--status-caution-bg);
+  border: 1px solid var(--status-caution-border);
+  color: #794D0F;
+}
+
+.alert-banner-error {
+  background-color: var(--status-avoid-bg);
+  border: 1px solid var(--status-avoid-border);
+  color: #8C2430;
+}
+
+.alert-banner-success {
+  background-color: var(--status-suitable-bg);
+  border: 1px solid var(--status-suitable-border);
+  color: #2D583F;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: #E0CDD2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #CBAEB6;
+}
