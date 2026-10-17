@@ -1,0 +1,184 @@
+
+
+.welcome-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px 40px;
+
+  /* New welcome page background */
+  background: linear-gradient(
+    135deg,
+    #FBF0F4 0%,
+    #FBF0F4 50%,
+    #FBF0F4 100%
+  );
+
+  color: #ffffff;
+  font-family: inherit;
+}
+
+.welcome-heading {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(28px, 5vw, 36px);
+  font-weight: 750;
+  letter-spacing: -1.2px;
+  line-height: 1.25;
+}
+
+
+.welcome-content {
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.welcome-icon {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 22px;
+  border: 1px solid #ed8caf;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ed8caf;
+  background: rgba(225, 153, 210, 0.12);
+  box-shadow: 0 0 30px rgba(231, 132, 181, 0.12);
+}
+
+.welcome-content h1 {
+  margin: 0;
+  font-size: clamp(28px, 5vw, 36px);
+  font-weight: 750;
+  letter-spacing: -1.2px;
+  line-height: 1.25;
+}
+
+.welcome-content h1 span {
+  background: linear-gradient(90deg, #aa2d5b, #aa2d5b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.welcome-subtitle {
+  max-width: 460px;
+  margin: 14px auto 34px;
+  color: #0c0004;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.medical-notice {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 28px 30px 32px;
+  text-align: left;
+  background: rgba(248, 235, 246, 0.94);
+  border: 1px solid rgba(248, 246, 247, 0.15);
+  border-radius: 26px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+}
+
+.medical-notice h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.medical-notice h2 svg {
+  flex-shrink: 0;
+  color: #aa2d5b;
+}
+
+.notice-bold {
+  margin: 0 0 18px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.65;
+}
+
+.notice-description {
+  margin: 0 0 18px;
+  color: #130112;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.notice-footer {
+  margin: 0;
+  color: #050114;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.welcome-accept {
+  display: block;
+  width: 100%;
+  min-height: 64px;
+  margin-top: 30px;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(100deg, #962E55, #962E55);
+  color: #fefefe;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 650;
+  cursor: pointer;
+  box-shadow: 0 8px 28px rgba(223, 140, 190, 0.2);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.welcome-accept:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.welcome-accept:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+  .welcome-screen {
+    padding: 28px 18px;
+  }
+
+  .welcome-subtitle {
+    font-size: 15px;
+    margin-bottom: 26px;
+  }
+
+  .medical-notice {
+    padding: 24px 22px;
+    border-radius: 22px;
+  }
+
+  .medical-notice h2 {
+    font-size: 18px;
+  }
+
+  .notice-bold,
+  .notice-description {
+    font-size: 15px;
+  }
+
+  .notice-footer {
+    font-size: 13px;
+  }
+
+  .welcome-accept {
+    min-height: 58px;
+    margin-top: 24px;
+    font-size: 16px;
+  }
+}
