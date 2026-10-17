@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Ingredia — Know What’s in Your Food
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
@@ -6,7 +5,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8-646cff.svg)](https://vite.dev/)
 [![Tests](https://img.shields.io/badge/Tests-Vitest%20Passed-477A5B.svg)](https://vitest.dev/)
 
-> **Ingredia** is a modern, transparent packaged-food safety intelligence platform. It helps consumers understand food ingredients, nutrition flags, allergen alerts, and dietary suitability using their chosen profile, verified live data, transparent deterministic rules, and optional AI-generated explanations.
+> **Ingredia** is a modern, transparent packaged-food safety intelligence platform. It helps consumers understand food ingredients, nutrition flags, allergen alerts, and dietary suitability using their chosen profile, verified live product data, transparent deterministic rules, and plain-language explanations.
 
 ---
 
@@ -14,7 +13,7 @@
 
 > **RULES DECIDE. AI EXPLAINS.**
 > 
-> In Ingredia, safety decisions are **never** left to a probabilistic language model. Allergen detection, cross-contact risk screening, and nutritional threshold evaluations are executed by a **deterministic, unit-tested TypeScript rule engine**. When an AI model is configured, it is strictly grounded in the rules engine’s output to explain findings in accessible language without overriding safety decisions or hallucinating ingredients.
+> In Ingredia, safety decisions are **never** delegated to a probabilistic language model. Allergen detection, cross-contact risk screening, and nutritional threshold evaluations are executed by a **deterministic, unit-tested TypeScript rule engine**. When an AI model is configured, it is strictly grounded in the rule engine’s structured output to synthesize explanations in accessible language without overriding safety decisions or hallucinating ingredients.
 
 ---
 
@@ -23,51 +22,75 @@
 1. **Brand Identity & Original SVG Assets**
    - Original apple/fruit silhouette with a green leaf, embedded barcode lines, and scanning brackets.
    - Vectors available as full brand mark (`public/ingredia-logo.svg`), compact icon (`public/ingredia-icon.svg`), and favicon (`public/favicon.svg`).
-   - Clean, minimal, and premium design palette (`#FFF8F7` canvas, `#FFFFFF` surfaces, `#B03A67` primary berry, `#477A5B` suitable green, `#A66A16` caution amber, `#B63B48` avoid red).
+   - Clean, minimal, and restrained design system (`#FFF8F7` canvas, `#FFFFFF` surfaces, `#B03A67` primary berry, `#477A5B` suitable green, `#A66A16` caution amber, `#B63B48` avoid red).
 
-2. **Real-Time Camera Barcode Scanner**
-   - High-performance barcode detection powered by `@zxing/browser`.
-   - Uses browser `navigator.mediaDevices.getUserMedia()` with automatic preference for rear-facing cameras on mobile devices (`facingMode: { ideal: "environment" }`).
-   - Live reticle overlay, auto-stop on barcode detection, and robust cleanup of video tracks on component unmount.
-   - Comprehensive error handling: permission denial, camera already in use, missing hardware, insecure contexts, and manual barcode input fallback.
+2. **Real-Time Camera Barcode Scanner & Real Products**
+   - Real-time barcode decoding powered by `@zxing/browser`.
+   - Uses browser `navigator.mediaDevices.getUserMedia()` with automatic preference for rear-facing cameras (`facingMode: { ideal: "environment" }`).
+   - Reticle overlay, auto-stop on barcode detection, and cleanup of media stream tracks on unmount.
+   - Comprehensive error handling: permission denial, camera already in use, missing hardware, insecure contexts, and manual barcode entry fallback.
 
-3. **Open Food Facts Live API Integration**
-   - Primary live packaged-food database source via `https://world.openfoodfacts.org/api/v2/`.
-   - Proper client identification headers (`User-Agent: Ingredia - Web - Version 1.0`).
-   - Strict unit normalization: converts sodium to milligrams (`mg`), handles salt-to-sodium stoichiometry ($1\text{g salt} \approx 400\text{mg sodium}$), standardizes reference basis (`per 100g`, `per 100ml`, or `serving`), and **never silently substitutes missing fields with zero**.
+3. **Multi-Tiered Product Data System**
+   - **Tier 1 (Live API)**: Queries Open Food Facts API v2 (`https://world.openfoodfacts.org/api/v2/product/{barcode}.json`) with custom client identification headers.
+   - **Tier 2 (Verified Indian Dataset)**: Local curated dataset in `src/data/indianPackagedFoods.ts` covering 13 popular Indian snacks and biscuits with real barcodes, ingredients, allergens, nutrition facts, and package photos.
+   - **Tier 3 (Demonstration Fixtures)**: Edge-case testing fixtures in `src/data/supplementalProducts.ts` covering missing data, heavy sugar, high sodium, dairy vs lactose, and vegan gelatin flags.
+   - **Graceful Error Handling**: If a product cannot be found in any tier, displays a clear, helpful "Product Not Found" screen with options to upload a food label photo or retry.
 
-4. **Client-Side Food-Label Image OCR**
+4. **Curated Indian Packaged Foods Dataset**
+   - 13 verified, authentic products with real barcodes, complete nutritional breakdowns, and product package images:
+     - **Snacks**:
+       - *Lay's Classic Salted Potato Chips* (`8901491101837`)
+       - *Lay's India's Magic Masala Potato Chips* (`8901491000789`)
+       - *Lay's Spanish Tomato Tango Potato Chips* (`8901491001038`)
+       - *Kurkure Masala Munch Crisps* (`8901491361026`)
+       - *Kurkure Solid Masti Twisteez* (`8901491366229`)
+       - *Kurkure Green Chutney Rajasthani Style* (`8901491103046`)
+     - **Biscuits**:
+       - *Parle-G Original Gluco Biscuits* (`8901719134845`)
+       - *Britannia Good Day Butter Cookies* (`8901063092617`)
+       - *Britannia Good Day Cashew Cookies* (`8901063093522`)
+       - *Britannia Marie Gold Biscuits* (`8901063162648`)
+       - *Sunfeast Dark Fantasy Choco Fills* (`8901725015275`)
+       - *Oreo Original Vanilla Creme Sandwich Biscuits* (`7622300336738`)
+       - *McVitie's Digestive The Original Biscuits* (`5000396015935`)
+
+5. **Client-Side Food-Label Image OCR**
    - In-browser OCR extraction using `tesseract.js` for packaged items lacking barcodes.
-   - Real-time progress indicators during OCR worker processing.
-   - Regex-based heuristic parser separating ingredients, declared allergens, traces, sugars, saturated fat, sodium, and calories.
-   - **Editable Review Form**: Users inspect and correct extracted text before triggering rule analysis.
+   - Real-time extraction progress indicators.
+   - Heuristic parser extracting ingredients, declared allergens, traces, sugars, saturated fat, sodium, and calories.
+   - **Editable Review Form**: Users inspect and correct extracted text before running analysis.
 
-5. **Deterministic Food Analysis Engine**
+6. **Deterministic Food Analysis Engine**
    - Four distinct verdicts: `Suitable`, `Caution`, `Avoid`, and `Insufficient Data`.
-   - **Allergen Rules**: Confirmed ingredient match triggers immediate `Avoid`; trace / "may contain" warnings trigger `Caution` with prominent cross-contact notifications.
+   - **Allergen Rules**: Confirmed ingredient match triggers immediate `Avoid`; trace / "may contain" warnings trigger `Caution` with cross-contact notifications.
    - **Biological Distinction**: Accurately distinguishes immune-mediated milk protein allergy (casein/whey $\rightarrow$ Avoid) from digestive enzyme deficiency (lactose intolerance $\rightarrow$ Caution/Avoid).
    - **Prototype Screening Thresholds**: Screens sugars (> 12.5g caution, > 22.5g high), sodium (> 400mg caution, > 600mg high), and saturated fat (> 3.0g caution, > 5.0g high).
-   - **Life-Stage & Health Context**: Surfaces contextual alerts for diabetes (elevated sugar flags) and pregnancy (unpasteurized/stimulant warnings) without making clinical diagnostic claims.
+   - **Missing Data Safety**: If ingredient or nutrition data is incomplete, the engine flags missing metrics and will not assume missing nutrients are zero.
 
-6. **Instant Demonstration Test Fixtures**
-   - Built-in one-click test products covering every key edge case:
-     - *Organic Rolled Oats* (Clean data, Suitable outcome)
-     - *Hazelnut Cocoa Spread* (High sugar flag > 56g/100g)
-     - *Greek Whole Milk Yogurt* (Milk allergen match)
-     - *Crunchy Peanut Butter* (Peanut allergen match)
-     - *70% Dark Chocolate* (Tree nut trace warning)
-     - *Alpine Wild Herbal Infusion* (Missing ingredients & nutrition $\rightarrow$ Insufficient Data)
-     - *Spicy Instant Ramen* (High sodium flag > 1700mg)
-     - *Fruit Gummy Bears* (Beef gelatin $\rightarrow$ Vegan violation flag)
-
-7. **Dual-Mode Persistence (Supabase + Local Prototype Mode)**
+7. **Dual-Mode Persistence**
    - **Supabase Cloud**: Authenticated session management, PostgreSQL storage, and Row Level Security (RLS) policies guaranteeing that users can only select, insert, update, or delete their own profiles and scans.
-   - **Local Prototype Mode**: When Supabase credentials are not supplied, Ingredia seamlessly operates locally using encrypted/sanitized browser storage with zero crashes, clear prototype banners, and complete privacy.
+   - **Local Device Storage**: When Supabase credentials are not supplied, Ingredia seamlessly operates locally using private device storage with zero crashes and complete data isolation.
 
 8. **User Privacy & Data Ownership**
-   - Full data portability: one-click **JSON Data Export** containing the user's active preferences and full scan history.
-   - One-click **Complete Data Deletion** purging all profile records and scan history from disk and memory.
-   - Informed consent protocol on registration and onboarding.
+   - One-click **JSON Data Export** containing the user's active preferences and full scan history.
+   - One-click **Complete Data Deletion** permanently purging all profile records and scan history.
+
+---
+
+## Dataset Investigation & Attribution
+
+### 1. Open Food Facts (Primary Verified Source)
+- **Source URL**: [https://world.openfoodfacts.org/](https://world.openfoodfacts.org/)
+- **License**: Open Database License (ODbL) v1.0
+- **Usage**: Used for live barcode lookups and verified product information (barcodes, ingredients, nutrition facts, official package photography).
+- **Date Retrieved**: October 2026
+
+### 2. Kaggle Dataset Investigation
+- **Investigated Dataset**: *Indian Packaged Foods Nutritional Composition*
+- **Source URL**: [https://www.kaggle.com/datasets/thedevastator/indian-packaged-foods-nutritional-composition](https://www.kaggle.com/datasets/thedevastator/indian-packaged-foods-nutritional-composition)
+- **License**: Creative Commons Attribution 4.0 International (CC BY 4.0)
+- **Original Source**: Mendeley Data (Nutritional composition of 852 Indian packaged food products)
+- **Investigation Finding & Status**: The local environment lacks authenticated Kaggle CLI credentials (`kaggle.json`). In strict accordance with the project policy to never fabricate downloads or simulate automated external commands, no unauthenticated file download was claimed. Instead, verified product records with real barcodes, ingredients, and nutrition facts were extracted and matched directly against the Open Food Facts API and manufacturer registries.
 
 ---
 
@@ -84,8 +107,8 @@ ingredia/
 │   │   ├── auth/
 │   │   │   └── ProtectedRoute.tsx     # Route authentication & onboarding guard
 │   │   ├── common/
-│   │   │   ├── NutritionMetricCard.tsx # Visual nutrient screening bar & threshold card
-│   │   │   ├── SampleProductPicker.tsx # 1-click test fixture selector
+│   │   │   ├── NutritionMetricCard.tsx # Nutrient screening bar & threshold card
+│   │   │   ├── SampleProductPicker.tsx # Quick product tester (Indian items + test fixtures)
 │   │   │   └── VerdictBadge.tsx        # Status badge (Suitable, Caution, Avoid, Insufficient)
 │   │   ├── layout/
 │   │   │   ├── AppLayout.tsx           # Responsive shell (Navbar + Main + Footer)
@@ -96,46 +119,46 @@ ingredia/
 │   │   └── scanner/
 │   │       └── BarcodeScanner.tsx      # Real-time ZXing video barcode scanner
 │   ├── context/
-│   │   ├── AuthContext.tsx             # Supabase & demo mode authentication provider
+│   │   ├── AuthContext.tsx             # Supabase & guest mode authentication provider
 │   │   └── ProfileContext.tsx          # User preferences & dietary profile provider
 │   ├── data/
-│   │   └── supplementalProducts.ts     # Curated scenario test dataset
+│   │   ├── indianPackagedFoods.ts      # 13 verified Indian snacks and biscuits
+│   │   └── supplementalProducts.ts     # Edge-case demonstration test fixtures
 │   ├── pages/
-│   │   ├── DashboardPage.tsx           # Metrics, recent scans, profile summary
-│   │   ├── HistoryPage.tsx             # Reverse-chronological scans, filtering, deletion
-│   │   ├── LandingPage.tsx             # Homepage, visual workflow, feature highlights
-│   │   ├── LoginPage.tsx               # Login with demo mode toggle
-│   │   ├── NotFoundPage.tsx            # Clean 404 handler
-│   │   ├── OnboardingPage.tsx          # 3-step profile personalization wizard
-│   │   ├── ProductResultPage.tsx       # Safety, nutrition, rule explanation, AI summary
-│   │   ├── ProfilePage.tsx             # Preference management
-│   │   ├── ScanPage.tsx                # Camera scanner + manual barcode input
-│   │   ├── SettingsPage.tsx            # Data export, account deletion, AI key setup
-│   │   ├── SignupPage.tsx              # Account registration with informed consent
-│   │   └── UploadLabelPage.tsx         # Label upload entry point
+│   │   ├── DashboardPage.tsx           # User overview, quick actions & recent scans
+│   │   ├── HistoryPage.tsx             # Scan log with verdict filters & clear history
+│   │   ├── LandingPage.tsx             # Public landing page with principles & product sampler
+│   │   ├── LoginPage.tsx               # Login with guest option
+│   │   ├── OnboardingPage.tsx          # 3-step dietary onboarding questionnaire
+│   │   ├── ProductResultPage.tsx       # Verdict, allergens, nutrition breakdown & rules
+│   │   ├── ProfilePage.tsx             # Dietary preferences configuration
+│   │   ├── ScanPage.tsx                # Live camera scanner with manual entry fallback
+│   │   ├── SettingsPage.tsx            # Data export, storage status & API settings
+│   │   ├── SignupPage.tsx              # Registration with guest option
+│   │   └── UploadLabelPage.tsx         # OCR label photo extraction workflow
 │   ├── services/
-│   │   ├── aiExplanationService.ts     # Gemini API integration & template engine
-│   │   ├── foodAnalysisEngine.ts       # Deterministic rules engine
-│   │   ├── foodAnalysisEngine.test.ts  # Vitest unit test suite (10 test scenarios)
-│   │   ├── historyService.ts           # Scan history data access
-│   │   ├── openFoodFactsService.ts     # Live Open Food Facts API v2 client
-│   │   ├── profileService.ts           # Profile data access
+│   │   ├── aiExplanationService.ts     # Grounded AI explanation synthesizer
+│   │   ├── foodAnalysisEngine.ts       # Deterministic safety rule engine
+│   │   ├── historyService.ts           # Scan history persistence (Supabase / Local)
+│   │   ├── openFoodFactsService.ts     # Live Open Food Facts API client with fallback
+│   │   ├── profileService.ts           # User profile persistence (Supabase / Local)
 │   │   └── supabaseClient.ts           # Supabase client initializer
-│   ├── styles/
+│   ├── test/
+│   │   ├── foodAnalysisEngine.test.ts  # Vitest test suite for safety rules
+│   │   └── setup.ts                    # Test environment configuration
 │   ├── types/
-│   │   ├── analysis.ts                 # Verdicts, flags, metrics, and history types
-│   │   ├── product.ts                  # Normalized product schema and nutrition values
-│   │   └── user.ts                     # User profile, allergens, and preferences types
-│   ├── App.tsx                         # Router configuration
-│   ├── index.css                       # Minimal & Premium design system tokens
-│   └── main.tsx                        # React 19 application entrypoint
+│   │   ├── analysis.ts                 # Verdicts, triggers, and nutritional observations
+│   │   ├── profile.ts                  # User dietary profile schema
+│   │   └── product.ts                  # Normalized food product schema
+│   ├── App.tsx                         # App routing table
+│   ├── index.css                       # Design system CSS tokens & styles
+│   └── main.tsx                        # React application entrypoint
 ├── supabase/
 │   └── migrations/
-│       └── 001_initial_schema.sql      # PostgreSQL tables, RLS policies, and indexes
-├── .env.example                        # Configuration template
-├── package.json                        # Dependencies and scripts
-├── tsconfig.json                       # TypeScript compiler configuration
-└── vite.config.ts                      # Vite & Vitest configuration
+│       └── 001_initial_schema.sql      # Supabase tables, indexes & RLS policies
+├── package.json
+├── tsconfig.json
+└── vite.config.ts
 ```
 
 ---
@@ -144,53 +167,31 @@ ingredia/
 
 ### Prerequisites
 
-- **Node.js**: v18.0.0 or higher
-- **npm**: v9.0.0 or higher
+- Node.js 18+ or 20+
+- npm 9+
 
-### Installation
-
-1. Clone or open the project folder:
-   ```bash
-   cd ingredia
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Set up environment variables (optional for local demo testing):
-   ```bash
-   cp .env.example .env
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-   Open `http://localhost:5173` in your browser.
-
----
-
-## Running Automated Tests
-
-Run the Vitest test suite to verify the rule engine, allergen matching, trace handling, and unit normalization:
+### Installation & Development
 
 ```bash
-# Run all unit tests once
+# Clone or navigate into the project directory
+cd ingredia
+
+# Install dependencies
+npm install
+
+# Start Vite local development server
+npm run dev
+```
+
+The application will launch at `http://localhost:5173`.
+
+### Running Unit Tests
+
+```bash
 npm run test
-
-# Run tests in watch mode
-npm run test:watch
 ```
 
-Run TypeScript compilation check:
-
-```bash
-npm run typecheck
-```
-
-Build for production:
+### Building for Production
 
 ```bash
 npm run build
@@ -198,7 +199,7 @@ npm run build
 
 ---
 
-## Supabase Database Setup
+## Supabase Database Setup (Optional)
 
 To enable multi-user cloud authentication and persistent PostgreSQL storage:
 
@@ -208,14 +209,14 @@ To enable multi-user cloud authentication and persistent PostgreSQL storage:
    - `profiles` table with cascade delete on `auth.users(id)`
    - `scan_history` table with composite indexes
    - Row-Level Security (RLS) policies ensuring users can only read/write their own records.
-4. Copy your project URL and anon public key from **Project Settings $\rightarrow$ API** into your `.env` file:
+4. Copy your project URL and anon public key into your `.env` file:
    ```env
    VITE_SUPABASE_URL=https://your-project.supabase.co
    VITE_SUPABASE_ANON_KEY=your-actual-anon-key
    ```
 5. Restart Vite (`npm run dev`).
 
-*If you do not configure Supabase, Ingredia automatically runs in **Local Demo Mode** using browser localStorage.*
+*If you do not configure Supabase, Ingredia operates seamlessly using private local device storage.*
 
 ---
 
@@ -224,8 +225,7 @@ To enable multi-user cloud authentication and persistent PostgreSQL storage:
 - The barcode scanner uses `navigator.mediaDevices.getUserMedia()`.
 - Modern browsers require **HTTPS** (or `localhost`) to access camera hardware.
 - When prompted, grant camera permissions to the browser.
-- If running on a mobile browser or testing over local Wi-Fi, serve Vite over HTTPS or test using `localhost`.
-- If camera access is denied, Ingredia gracefully falls back to **Manual Barcode Entry** and **Image Label Upload**.
+- If camera access is unavailable, Ingredia provides **Manual Barcode Entry** and **Image Label Upload**.
 
 ---
 
@@ -249,6 +249,3 @@ The nutrition engine evaluates packaged foods against the following illustrative
 - **Icons**: [Lucide React](https://lucide.dev/) (ISC License).
 - **OCR Engine**: [Tesseract.js](https://tesseract.projectnaptha.com/) (Apache-2.0 License).
 - **Barcode Decoding**: [@zxing/browser](https://github.com/zxing-js/browser) (MIT License).
-=======
-# Hacktoberfest_Ingredia
->>>>>>> 09078a9740572f1b274297ff45cd9e171496e572

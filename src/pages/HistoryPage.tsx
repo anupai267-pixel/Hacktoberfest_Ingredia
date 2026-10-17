@@ -7,7 +7,7 @@ import { VerdictBadge } from '../components/common/VerdictBadge';
 import { 
   Clock, 
   Trash2, 
-  Sparkles, 
+  Package, 
   Camera, 
   AlertCircle 
 } from 'lucide-react';
@@ -175,27 +175,39 @@ export const HistoryPage: React.FC = () => {
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {item.imageUrl ? (
-                  <img
-                    src={item.imageUrl}
-                    alt={item.productName}
-                    style={{ width: 52, height: 52, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      width: 52,
-                      height: 52,
-                      borderRadius: 'var(--radius-sm)',
-                      background: 'var(--bg-blush)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Sparkles size={20} color="var(--primary-berry)" />
-                  </div>
-                )}
+                <div
+                  style={{
+                    width: 52,
+                    height: 52,
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'var(--bg-blush)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    flexShrink: 0,
+                    position: 'relative',
+                  }}
+                >
+                  <Package size={20} color="var(--primary-berry)" />
+                  {item.imageUrl && (
+                    <img
+                      src={item.imageUrl}
+                      alt={item.productName}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  )}
+                </div>
 
                 <div>
                   <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.125rem' }}>

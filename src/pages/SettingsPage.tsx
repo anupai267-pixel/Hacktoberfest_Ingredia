@@ -8,7 +8,6 @@ import {
   Download, 
   Trash2, 
   LogOut, 
-  Sparkles, 
   Key, 
   Check, 
   AlertCircle 
@@ -98,7 +97,7 @@ export const SettingsPage: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '0.5rem' }}>
             <span style={{ color: 'var(--text-secondary)' }}>Storage Engine:</span>
             <span style={{ fontWeight: 600, color: isSupabaseConfigured ? 'var(--status-suitable)' : 'var(--primary-berry)' }}>
-              {isSupabaseConfigured ? 'Supabase PostgreSQL (Cloud Authenticated)' : 'Local Browser Storage (Prototype Mode)'}
+              {isSupabaseConfigured ? 'Supabase PostgreSQL (Cloud Authenticated)' : 'Local Device Storage'}
             </span>
           </div>
 
@@ -187,11 +186,11 @@ export const SettingsPage: React.FC = () => {
       {/* Optional AI Explanation Configuration */}
       <div className="card">
         <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Sparkles size={18} color="var(--primary-berry)" />
-          <span>Optional Google Gemini API Key</span>
+          <Key size={18} color="var(--primary-berry)" />
+          <span>Optional AI Explanation API Key</span>
         </h3>
         <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-          By default, Ingredia synthesizes transparent explanations using its deterministic rule engine. To enable optional enhanced natural language synthesis via Google Gemini, enter your personal API key below:
+          By default, Ingredia synthesizes transparent explanations using its deterministic rule engine. To enable optional enhanced natural language synthesis via an external AI model, enter your personal API key below:
         </p>
 
         <form onSubmit={handleSaveGeminiKey} style={{ display: 'flex', gap: '0.75rem' }}>

@@ -12,7 +12,7 @@ import {
   Clock, 
   ShieldAlert, 
   ArrowRight, 
-  Sparkles
+  Package
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -177,7 +177,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* Quick Test Sampler */}
-      <SampleProductPicker title="Quick Barcode Demonstrations & Edge Cases" />
+      <SampleProductPicker title="Verified Products & Safety Rule Scenarios" />
 
       {/* Recent Scans Section */}
       <div className="card">
@@ -246,27 +246,39 @@ export const DashboardPage: React.FC = () => {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  {record.imageUrl ? (
-                    <img
-                      src={record.imageUrl}
-                      alt={record.productName}
-                      style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 'var(--radius-sm)',
-                        background: 'var(--bg-blush)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Sparkles size={18} color="var(--primary-berry)" />
-                    </div>
-                  )}
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 'var(--radius-sm)',
+                      background: 'var(--bg-blush)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                      position: 'relative',
+                    }}
+                  >
+                    <Package size={18} color="var(--primary-berry)" />
+                    {record.imageUrl && (
+                      <img
+                        src={record.imageUrl}
+                        alt={record.productName}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    )}
+                  </div>
 
                   <div>
                     <h4 style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '0.125rem' }}>
