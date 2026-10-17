@@ -8,7 +8,6 @@ import {
   Download, 
   Trash2, 
   LogOut, 
-  Key, 
   Check, 
   AlertCircle 
 } from 'lucide-react';
@@ -17,10 +16,13 @@ export const SettingsPage: React.FC = () => {
   const { user, logout } = useAuth();
   const { profile, refreshProfile } = useProfile();
 
-  const [customKey, setCustomKey] = useState('');
-  const [keySaved, setKeySaved] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteStatus, setDeleteStatus] = useState<string | null>(null);
+
+  // Clean up any obsolete client-side key storage
+  React.useEffect(() => {
+    localStorage.removeItem('ingredia_custom_gemini_key');
+  }, []);
 
   const handleExportData = async () => {
     const history = await getScanHistory(user?.id);
@@ -52,18 +54,6 @@ export const SettingsPage: React.FC = () => {
     setDeleteStatus('All stored profile information and scan records have been permanently cleared.');
   };
 
-  const handleSaveGeminiKey = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (customKey.trim()) {
-      localStorage.setItem('ingredia_custom_gemini_key', customKey.trim());
-      setKeySaved(true);
-      setTimeout(() => setKeySaved(false), 3000);
-    } else {
-      localStorage.removeItem('ingredia_custom_gemini_key');
-      setKeySaved(true);
-    }
-  };
-
   return (
     <div className="app-container-narrow" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       <div>
@@ -71,7 +61,7 @@ export const SettingsPage: React.FC = () => {
           Settings & Data Controls
         </h1>
         <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-          Manage your account, privacy controls, data exports, and optional AI configurations.
+          Manage your account, privacy controls, and data exports.
         </p>
       </div>
 
@@ -180,38 +170,6 @@ export const SettingsPage: React.FC = () => {
               </button>
             </div>
           </div>
-        )}
-      </div>
-
-      {/* Optional AI Explanation Configuration */}
-      <div className="card">
-        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Key size={18} color="var(--primary-berry)" />
-          <span>Optional AI Explanation API Key</span>
-        </h3>
-        <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-          By default, Ingredia synthesizes transparent explanations using its deterministic rule engine. To enable optional enhanced natural language synthesis via an external AI model, enter your personal API key below:
-        </p>
-
-        <form onSubmit={handleSaveGeminiKey} style={{ display: 'flex', gap: '0.75rem' }}>
-          <input
-            type="password"
-            className="form-input"
-            value={customKey}
-            onChange={(e) => setCustomKey(e.target.value)}
-            placeholder="AIzaSy..."
-            style={{ flex: 1 }}
-          />
-          <button type="submit" className="btn btn-primary" style={{ flexShrink: 0 }}>
-            <Key size={15} />
-            <span>Save Key</span>
-          </button>
-        </form>
-
-        {keySaved && (
-          <span style={{ fontSize: '0.75rem', color: 'var(--status-suitable)', display: 'block', marginTop: '0.5rem' }}>
-            ✓ Key preference updated.
-          </span>
         )}
       </div>
 

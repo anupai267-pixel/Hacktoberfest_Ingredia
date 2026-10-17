@@ -38,7 +38,7 @@ export const ProductResultPage: React.FC = () => {
 
   // AI explanation state
   const [aiText, setAiText] = useState<string | null>(null);
-  const [aiSource, setAiSource] = useState<'gemini' | 'template'>('template');
+  const [aiSource, setAiSource] = useState<'groq' | 'template'>('template');
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showRuleTriggers, setShowRuleTriggers] = useState(false);
 
@@ -52,8 +52,8 @@ export const ProductResultPage: React.FC = () => {
 
       let targetProduct: NormalizedProduct | null = null;
 
-      // 1. Check if stored in sessionStorage from OCR flow
-      const cached = sessionStorage.getItem(`ingredia_product_${id}`);
+      // 1. Check if stored in sessionStorage or localStorage from OCR flow
+      const cached = sessionStorage.getItem(`ingredia_product_${id}`) || localStorage.getItem(`ingredia_product_${id}`);
       if (cached) {
         try {
           targetProduct = JSON.parse(cached);
@@ -341,7 +341,7 @@ export const ProductResultPage: React.FC = () => {
               fontWeight: 600,
             }}
           >
-            {aiSource === 'gemini' ? 'AI Explanation' : 'Transparent Rule Synthesis'}
+            {aiSource === 'groq' ? 'AI Explanation (Groq)' : 'Transparent Rule Synthesis'}
           </span>
         </div>
 

@@ -9,8 +9,9 @@ export const UploadLabelPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleProductExtracted = (product: NormalizedProduct) => {
-    // Save to sessionStorage so the ProductResultPage can retrieve custom OCR products
+    // Save to sessionStorage and localStorage so ProductResultPage can retrieve custom OCR products
     sessionStorage.setItem(`ingredia_product_${product.id}`, JSON.stringify(product));
+    localStorage.setItem(`ingredia_product_${product.id}`, JSON.stringify(product));
     navigate(`/product/${product.id}`);
   };
 
