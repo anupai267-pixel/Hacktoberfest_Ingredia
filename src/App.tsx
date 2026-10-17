@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { WelcomePage } from './pages/WelcomePage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProfileProvider } from './context/ProfileContext';
@@ -20,6 +21,15 @@ import { SettingsPage } from './pages/SettingsPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export const App: React.FC = () => {
+    const [hasAccepted, setHasAccepted] = useState(false);
+
+  if (!hasAccepted) {
+    return (
+      <WelcomePage
+        onAccept={() => setHasAccepted(true)}
+      />
+    );
+  }
   return (
     <BrowserRouter>
       <AuthProvider>

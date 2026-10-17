@@ -1,5 +1,12 @@
 import type { AnalysisResult } from '../types/analysis';
 import type { NormalizedProduct } from '../types/product';
+import { supabase, isSupabaseConfigured } from './supabaseClient';
+
+export interface AIExplanationResult {
+  text: string;
+  source: 'groq' | 'gemini' | 'template';
+  modelUsed?: string;
+}
 
 export interface AIExplanationResult {
   text: string;
@@ -10,6 +17,11 @@ export interface AIExplanationResult {
 /**
  * Generates an articulate, transparent, rules-grounded explanation
  * without needing an external API key.
+ *
+ * This function acts as the deterministic fallback whenever:
+ * 1. Supabase is not configured (e.g. offline or local demo mode)
+ * 2. The Groq API key is not configured on the Supabase Edge Function
+ * 3. Network or rate limit errors occur
  */
 export function generateTemplateExplanation(
   analysis: AnalysisResult,
@@ -81,6 +93,7 @@ export function generateTemplateExplanation(
 }
 
 /**
+<<<<<<< HEAD
  * Requests an AI explanation from the secure backend Groq service.
  * 
  * Safety & Security Guarantees:
@@ -88,11 +101,23 @@ export function generateTemplateExplanation(
  * - The deterministic rules engine verdict is never overridden.
  * - If the backend server is offline or Groq is unconfigured/rate-limited,
  *   the system automatically falls back to the deterministic template explanation.
+=======
+ * Requests an AI explanation from the secure Supabase Edge Function (`ingredia-ai`),
+ * powered by Groq and open-weight models (default: openai/gpt-oss-20b).
+ *
+ * Strict safety principle:
+ * The rules engine ALREADY computed the verdict. The AI only articulates the findings
+ * without overriding verdicts, hallucinating ingredients, or making clinical claims.
+ *
+ * Falls back gracefully to `generateTemplateExplanation()` if Supabase is unconfigured,
+ * or if the Edge Function encounters any error.
+>>>>>>> f5d1b0e8c9bf2012e5776ae924b0aa7d3461bdb6
  */
 export async function requestAIExplanation(
   analysis: AnalysisResult,
   product: NormalizedProduct
 ): Promise<AIExplanationResult> {
+<<<<<<< HEAD
   const apiBase = import.meta.env.VITE_API_URL || '';
   const endpoint = `${apiBase}/api/ai/explain`;
 
@@ -143,6 +168,54 @@ export async function requestAIExplanation(
   } catch (error) {
     // Expected when backend server is not running or timeout occurs: silent fallback
     console.info('Backend Groq explanation unavailable, using deterministic rules synthesis.');
+=======
+  // If Supabase is not configured (e.g. running in local demo mode), fallback immediately
+  if (!isSupabaseConfigured || !supabase) {
+    return {
+      text: generateTemplateExplanation(analysis, product),
+      source: 'template',
+    };
+  }
+
+  try {
+    const { data, error } = await supabase.functions.invoke('ingredia-ai', {
+      body: {
+        product: {
+          name: product.name,
+          brand: product.brand,
+        },
+        analysis: {
+          verdict: analysis.verdict,
+          matchedAllergens: analysis.matchedAllergens,
+          matchedTraces: analysis.matchedTraces,
+          ingredientsOfConcern: analysis.ingredientsOfConcern,
+          triggeredRules: analysis.triggeredRules,
+          missingDataNotes: analysis.missingDataNotes,
+          nutritionalObservations: analysis.nutritionalObservations
+            .filter(n => n.status === 'high' || n.status === 'moderate')
+            .map(n => `${n.metric}: ${n.value ?? ''}${n.unit} (${n.status})`),
+        },
+      },
+    });
+
+    if (error) {
+      console.warn('Supabase Edge Function returned an error, falling back to template explanation:', error.message || error);
+      return {
+        text: generateTemplateExplanation(analysis, product),
+        source: 'template',
+      };
+    }
+
+    if (data?.explanation && typeof data.explanation === 'string' && data.explanation.trim()) {
+      return {
+        text: data.explanation.trim(),
+        source: 'groq',
+        modelUsed: data.model,
+      };
+    }
+  } catch (err) {
+    console.warn('AI explanation request failed, using template explanation:', err);
+>>>>>>> f5d1b0e8c9bf2012e5776ae924b0aa7d3461bdb6
   }
 
   // Resilient deterministic fallback
