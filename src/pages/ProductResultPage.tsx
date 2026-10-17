@@ -19,7 +19,8 @@ import {
   AlertTriangle, 
   CheckCircle2, 
   XCircle, 
-  Sparkles, 
+  Package, 
+  Lightbulb, 
   Info, 
   ChevronDown, 
   ChevronUp 
@@ -51,8 +52,8 @@ export const ProductResultPage: React.FC = () => {
 
       let targetProduct: NormalizedProduct | null = null;
 
-      // 1. Check if stored in sessionStorage from OCR flow
-      const cached = sessionStorage.getItem(`ingredia_product_${id}`);
+      // 1. Check if stored in sessionStorage or localStorage from OCR flow
+      const cached = sessionStorage.getItem(`ingredia_product_${id}`) || localStorage.getItem(`ingredia_product_${id}`);
       if (cached) {
         try {
           targetProduct = JSON.parse(cached);
@@ -182,35 +183,43 @@ export const ProductResultPage: React.FC = () => {
       {/* Product Summary Header Card */}
       <div className="card" style={{ padding: '1.75rem' }}>
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          {product.imageUrl ? (
-            <img
-              src={product.imageUrl}
-              alt={product.name}
-              style={{
-                width: 100,
-                height: 100,
-                objectFit: 'contain',
-                background: 'var(--bg-main)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--border-color)',
-                padding: '0.5rem',
-              }}
-            />
-          ) : (
-            <div
-              style={{
-                width: 100,
-                height: 100,
-                background: 'var(--bg-blush)',
-                borderRadius: 'var(--radius-md)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Sparkles size={36} color="var(--primary-berry)" />
-            </div>
-          )}
+          <div
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 'var(--radius-md)',
+              background: 'var(--bg-main)',
+              border: '1px solid var(--border-color)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              overflow: 'hidden',
+              flexShrink: 0,
+              position: 'relative',
+              padding: '0.5rem',
+            }}
+          >
+            <Package size={36} color="var(--primary-berry)" />
+            {product.imageUrl && (
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  background: '#FFFFFF',
+                  padding: '0.5rem',
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
+            )}
+          </div>
 
           <div style={{ flex: 1, minWidth: '240px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
@@ -319,7 +328,7 @@ export const ProductResultPage: React.FC = () => {
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.875rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Sparkles size={18} color="var(--primary-berry)" />
+            <Lightbulb size={18} color="var(--primary-berry)" />
             <h3 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Safety Explanation</h3>
           </div>
           <span
@@ -333,9 +342,9 @@ export const ProductResultPage: React.FC = () => {
             }}
           >
             {aiSource === 'groq'
-              ? 'Groq Open-Weight AI'
+              ? 'Groq AI Explanation'
               : aiSource === 'gemini'
-              ? 'Gemini AI Explanation'
+              ? 'AI Explanation'
               : 'Transparent Rule Synthesis'}
           </span>
         </div>

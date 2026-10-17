@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, LogIn, AlertCircle, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, LogIn, AlertCircle, ArrowRight } from 'lucide-react';
 
 export const LoginPage: React.FC = () => {
   const { login, switchToDemoMode } = useAuth();
@@ -131,15 +131,15 @@ export const LoginPage: React.FC = () => {
           <div style={{ flex: 1, height: '1px', background: 'var(--border-color)' }} />
         </div>
 
-        {/* Demo Mode Button */}
+        {/* Guest Explore Button */}
         <button
           type="button"
           onClick={handleDemoLogin}
           className="btn btn-secondary"
           style={{ width: '100%', height: '2.75rem', gap: '0.5rem' }}
         >
-          <Sparkles size={16} color="var(--primary-berry)" />
-          <span>Continue with Local Demo Mode</span>
+          <span>Continue as Guest</span>
+          <ArrowRight size={16} />
         </button>
 
         <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.875rem' }}>

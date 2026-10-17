@@ -10,12 +10,11 @@ import {
   LayoutDashboard, 
   Menu, 
   X, 
-  LogOut,
-  Sparkles
+  LogOut
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
-  const { user, isDemoMode, logout } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -46,25 +45,6 @@ export const Navbar: React.FC = () => {
         zIndex: 50,
       }}
     >
-      {/* Demo Mode Notice Banner if active */}
-      {isDemoMode && (
-        <div
-          style={{
-            background: 'var(--bg-blush)',
-            borderBottom: '1px solid var(--border-color)',
-            padding: '0.25rem 1rem',
-            fontSize: '0.75rem',
-            color: 'var(--primary-berry)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.5rem',
-          }}
-        >
-          <Sparkles size={13} />
-          <span>Local Demo Mode active — data saved locally in browser. No cloud credentials required.</span>
-        </div>
-      )}
 
       <div
         className="app-container"

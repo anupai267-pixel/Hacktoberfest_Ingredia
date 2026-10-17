@@ -55,7 +55,7 @@ export const Footer: React.FC = () => {
               <span>Privacy & Safety</span>
             </h5>
             <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '0.75rem' }}>
-              Your dietary profile and allergy selections remain private. When in local demo mode, data is kept strictly inside your browser.
+              Your dietary profile and allergy selections remain private. By default, your data is kept securely inside your local device storage.
             </p>
             <Link to="/settings" style={{ fontSize: '0.8125rem', color: 'var(--primary-berry)', fontWeight: 500 }}>
               Manage Data & Privacy Settings →

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   Camera, 
   ShieldAlert, 
-  Sparkles, 
+  ShieldCheck, 
   FileText, 
   ArrowRight, 
   HeartHandshake, 
@@ -31,7 +31,7 @@ export const LandingPage: React.FC = () => {
             marginBottom: '1.25rem',
           }}
         >
-          <Sparkles size={14} />
+          <ShieldCheck size={14} />
           <span>Transparent Packaged-Food Intelligence</span>
         </div>
 
@@ -167,7 +167,7 @@ export const LandingPage: React.FC = () => {
 
       {/* Interactive Sample Picker Section */}
       <section className="app-container">
-        <SampleProductPicker title="Try Ingredia Right Now (Instant Test Fixtures)" />
+        <SampleProductPicker title="Try Ingredia: Verified Foods & Safety Scenarios" />
       </section>
 
       {/* Core Principles & Features Section */}

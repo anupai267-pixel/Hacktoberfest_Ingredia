@@ -66,7 +66,7 @@ export const ScanPage: React.FC = () => {
             className="form-input"
             value={manualBarcode}
             onChange={(e) => setManualBarcode(e.target.value)}
-            placeholder="e.g. 3017620422003 or 8000500179864"
+            placeholder="e.g. 8901491101837 (Lay's) or 8901719134845 (Parle-G)"
             disabled={isLoading}
             style={{ flex: 1 }}
           />

@@ -5,6 +5,7 @@ import { supabase, isSupabaseConfigured } from './supabaseClient';
 export interface AIExplanationResult {
   text: string;
   source: 'groq' | 'gemini' | 'template';
+  model?: string;
   modelUsed?: string;
 }
 
@@ -13,9 +14,8 @@ export interface AIExplanationResult {
  * without needing an external API key.
  *
  * This function acts as the deterministic fallback whenever:
- * 1. Supabase is not configured (e.g. offline or local demo mode)
- * 2. The Groq API key is not configured on the Supabase Edge Function
- * 3. Network or rate limit errors occur
+ * 1. Backend server or Groq is not configured or offline
+ * 2. Network, timeout, or rate limit errors occur
  */
 export function generateTemplateExplanation(
   analysis: AnalysisResult,
@@ -87,68 +87,109 @@ export function generateTemplateExplanation(
 }
 
 /**
- * Requests an AI explanation from the secure Supabase Edge Function (`ingredia-ai`),
- * powered by Groq and open-weight models (default: openai/gpt-oss-20b).
+ * Requests an AI explanation from the secure backend Groq service or Supabase Edge Function.
  *
  * Strict safety principle:
  * The rules engine ALREADY computed the verdict. The AI only articulates the findings
  * without overriding verdicts, hallucinating ingredients, or making clinical claims.
  *
- * Falls back gracefully to `generateTemplateExplanation()` if Supabase is unconfigured,
- * or if the Edge Function encounters any error.
+ * Falls back gracefully to `generateTemplateExplanation()` if Groq/backend is unconfigured,
+ * or if any error occurs.
  */
 export async function requestAIExplanation(
   analysis: AnalysisResult,
   product: NormalizedProduct
 ): Promise<AIExplanationResult> {
-  // If Supabase is not configured (e.g. running in local demo mode), fallback immediately
-  if (!isSupabaseConfigured || !supabase) {
-    return {
-      text: generateTemplateExplanation(analysis, product),
-      source: 'template',
-    };
-  }
+  // 1. Try Express backend endpoint (POST /api/ai/explain)
+  const apiBase = import.meta.env.VITE_API_URL || '';
+  const endpoint = `${apiBase}/api/ai/explain`;
 
   try {
-    const { data, error } = await supabase.functions.invoke('ingredia-ai', {
-      body: {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
         product: {
           name: product.name,
           brand: product.brand,
+          ingredientsText: product.ingredientsText,
+          declaredAllergens: product.declaredAllergens,
+          traceWarnings: product.traceWarnings,
         },
         analysis: {
           verdict: analysis.verdict,
+          verdictReason: analysis.verdictReason,
+          triggeredRules: analysis.triggeredRules,
           matchedAllergens: analysis.matchedAllergens,
           matchedTraces: analysis.matchedTraces,
           ingredientsOfConcern: analysis.ingredientsOfConcern,
-          triggeredRules: analysis.triggeredRules,
+          nutritionalObservations: analysis.nutritionalObservations,
           missingDataNotes: analysis.missingDataNotes,
-          nutritionalObservations: analysis.nutritionalObservations
-            .filter(n => n.status === 'high' || n.status === 'moderate')
-            .map(n => `${n.metric}: ${n.value ?? ''}${n.unit} (${n.status})`),
         },
-      },
+      }),
+      signal: controller.signal,
     });
 
-    if (error) {
-      console.warn('Supabase Edge Function returned an error, falling back to template explanation:', error.message || error);
-      return {
-        text: generateTemplateExplanation(analysis, product),
-        source: 'template',
-      };
-    }
+    clearTimeout(timeoutId);
 
-    if (data?.explanation && typeof data.explanation === 'string' && data.explanation.trim()) {
-      return {
-        text: data.explanation.trim(),
-        source: 'groq',
-        modelUsed: data.model,
-      };
+    if (response.ok) {
+      const data = await response.json();
+      if (data.success && data.text) {
+        return {
+          text: data.text,
+          source: 'groq',
+          model: data.model,
+          modelUsed: data.model,
+        };
+      }
     }
-  } catch (err) {
-    console.warn('AI explanation request failed, using template explanation:', err);
+  } catch (_e) {
+    // Backend server offline or timeout
   }
 
+  // 2. Secondary fallback: Try Supabase Edge Function if configured
+  if (isSupabaseConfigured && supabase) {
+    try {
+      const { data, error } = await supabase.functions.invoke('ingredia-ai', {
+        body: {
+          product: {
+            name: product.name,
+            brand: product.brand,
+          },
+          analysis: {
+            verdict: analysis.verdict,
+            matchedAllergens: analysis.matchedAllergens,
+            matchedTraces: analysis.matchedTraces,
+            ingredientsOfConcern: analysis.ingredientsOfConcern,
+            triggeredRules: analysis.triggeredRules,
+            missingDataNotes: analysis.missingDataNotes,
+            nutritionalObservations: (analysis.nutritionalObservations || [])
+              .filter(n => n.status === 'high' || n.status === 'moderate')
+              .map(n => `${n.metric}: ${n.value ?? ''}${n.unit} (${n.status})`),
+          },
+        },
+      });
+
+      if (!error && data?.explanation && typeof data.explanation === 'string' && data.explanation.trim()) {
+        return {
+          text: data.explanation.trim(),
+          source: 'groq',
+          model: data.model,
+          modelUsed: data.model,
+        };
+      }
+    } catch (_err) {
+      // Supabase Edge Function call failed
+    }
+  }
+
+  // 3. Reliable deterministic rules engine template fallback
   return {
     text: generateTemplateExplanation(analysis, product),
     source: 'template',

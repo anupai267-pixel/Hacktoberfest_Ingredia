@@ -11,9 +11,16 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Environment variables & secrets (Never commit secrets to git)
 .env
 .env.*
+.env.local
+server/.env
+server/.env.*
+server/.env.local
 !.env.example
+!server/.env.example
 
 # Editor directories and files
 .vscode/*
